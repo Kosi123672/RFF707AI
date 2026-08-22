@@ -599,6 +599,638 @@
 
     <script>
         // ============================================================
+        // ========== API KEY BARU ==========
+        // ============================================================
+        const API_KEY = 'sk-A6hUz64wwCZYDhM6aEXAaUsz99zdIBlS4jks5raqZ2xqYUeu';
+        const API_BASE = 'https://apihub.agnes-ai.com/v1';
+        const MODEL = 'agnes-2.0-flash';
+        const MAX_HISTORY = 20;
+
+        // ============================================================
+        // ========== MEMORY / CONVERSATION HISTORY ==========
+        // ============================================================
+
+        const MEMORY_KEY = 'rff707_memory';
+
+        function getMemory() {
+            try {
+                const stored = localStorage.getItem(MEMORY_KEY);
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+            } catch (e) {
+                console.warn('Gagal load memory:', e);
+            }
+            return [];
+        }
+
+        function saveMemory(messages) {
+            try {
+                if (messages.length > 50) {
+                    messages = messages.slice(-50);
+                }
+                localStorage.setItem(MEMORY_KEY, JSON.stringify(messages));
+                updateMemoryIndicator();
+            } catch (e) {
+                console.warn('Gagal save memory:', e);
+            }
+        }
+
+        function addToMemory(role, content) {
+            const memory = getMemory();
+            memory.push({ role, content });
+            saveMemory(memory);
+        }
+
+        function clearMemory() {
+            localStorage.removeItem(MEMORY_KEY);
+            updateMemoryIndicator();
+        }
+
+        function getConversationHistory() {
+            return getMemory();
+        }
+
+        function updateMemoryIndicator() {
+            const memory = getMemory();
+            const count = memory.length;
+            const indicator = document.getElementById('memoryCount');
+            if (indicator) {
+                indicator.textContent = count;
+            }
+        }
+
+        // ============================================================
+        // ========== ANTI-INSPECT & BAN SYSTEM ==========
+        // ============================================================
+
+        (function() {
+            const BAN_KEY = 'rff707_ban_until';
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a14;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            height: 100vh;
+            max-height: 650px;
+            background: #111128;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #2a2a5a;
+        }
+
+        /* ========== BAN OVERLAY ========== */
+        .ban-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .ban-overlay.active {
+            display: flex;
+        }
+
+        .ban-overlay .ban-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .ban-overlay h2 {
+            color: #f87171;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .ban-overlay p {
+            color: #8888bb;
+            font-size: 14px;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .ban-overlay .ban-timer {
+            color: #6a5acd;
+            font-size: 32px;
+            font-weight: 800;
+            margin-top: 15px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ban-overlay .ban-count {
+            color: #4a4a7a;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        header {
+            padding: 14px 20px;
+            background: #0d0d22;
+            border-bottom: 2px solid #6a5acd;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #8a7acd;
+            letter-spacing: 0.5px;
+        }
+
+        header .logo span {
+            color: #6a5acd;
+        }
+
+        header .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6a5acd, #8a7acd);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        header h1 {
+            font-size: 15px;
+            color: #e0e0ff;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        header h1 small {
+            font-size: 10px;
+            color: #6a5acd;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .status-dot.online {
+            background: #4ade80;
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
+        }
+        .status-dot.offline {
+            background: #f87171;
+        }
+        .status-dot.checking {
+            background: #fbbf24;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .status-text {
+            font-size: 11px;
+            color: #8888bb;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 12px 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: #0d0d1a;
+        }
+
+        .chat-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #4a4a7a;
+            border-radius: 10px;
+        }
+
+        .message {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            max-width: 92%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .message.bot .avatar {
+            background: linear-gradient(135deg, #6a5acd, #8a7acd);
+            color: #fff;
+        }
+
+        .message.user .avatar {
+            background: #3a2a7a;
+            color: #fff;
+        }
+
+        .message .bubble {
+            background: #1a1a36;
+            padding: 8px 14px;
+            border-radius: 14px;
+            color: #d0d0f0;
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            max-width: 100%;
+            border: 1px solid #2a2a5a;
+        }
+
+        .message.user .bubble {
+            background: #3a2a7a;
+            border-color: #5a4a9a;
+        }
+
+        .message .bubble code {
+            background: #0d0d22;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #aaddaa;
+        }
+
+        .message .bubble .typing-dots {
+            display: flex;
+            gap: 4px;
+            padding: 2px 0;
+        }
+
+        .message .bubble .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6a5acd;
+            animation: typing 1.4s infinite;
+        }
+
+        .message .bubble .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .message .bubble .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+
+        /* ========== MEMORY INDICATOR ========== */
+        .memory-indicator {
+            font-size: 10px;
+            color: #4a4a7a;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #0d0d22;
+            border: 1px solid #2a2a5a;
+        }
+
+        .memory-indicator .mem-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #4ade80;
+            display: inline-block;
+        }
+
+        .input-area {
+            padding: 10px 16px 14px;
+            background: #0d0d22;
+            border-top: 2px solid #2a2a5a;
+            flex-shrink: 0;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .input-row textarea {
+            flex: 1;
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid #2a2a5a;
+            background: #0a0a18;
+            color: #d0d0f0;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: border 0.3s;
+            font-family: inherit;
+            min-height: 40px;
+            max-height: 100px;
+            line-height: 1.5;
+        }
+
+        .input-row textarea:focus {
+            border-color: #6a5acd;
+            box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.2);
+        }
+
+        .input-row textarea::placeholder {
+            color: #444477;
+        }
+
+        .input-row button {
+            padding: 8px 22px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6a5acd, #8a7acd);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            height: 40px;
+            min-width: 70px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .input-row button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 25px rgba(106, 90, 205, 0.4);
+        }
+
+        .input-row button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .input-options {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-options button {
+            padding: 3px 12px;
+            border: 1px solid #2a2a5a;
+            border-radius: 14px;
+            background: transparent;
+            color: #8888bb;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .input-options button:hover {
+            background: #1a1a3a;
+            color: #d0d0f0;
+            border-color: #6a5acd;
+        }
+
+        .input-options .clear-btn {
+            border-color: #4a2a2a;
+            color: #aa7777;
+        }
+
+        .input-options .clear-btn:hover {
+            background: #1a0a0a;
+            border-color: #7a3a3a;
+            color: #ff8888;
+        }
+
+        .input-options .reset-memory-btn {
+            border-color: #4a4a2a;
+            color: #aaaa77;
+        }
+
+        .input-options .reset-memory-btn:hover {
+            background: #1a1a0a;
+            border-color: #7a7a3a;
+            color: #ffff88;
+        }
+
+        .brand-tag {
+            font-size: 9px;
+            color: #444477;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .brand-tag .dot {
+            color: #6a5acd;
+        }
+
+        .model-selector-wrapper {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .message {
+                max-width: 96%;
+            }
+            .message .bubble {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            header h1 {
+                font-size: 13px;
+            }
+            .input-row textarea {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .input-row button {
+                padding: 8px 14px;
+                font-size: 12px;
+                min-width: 55px;
+            }
+            header .logo {
+                font-size: 18px;
+            }
+            header .logo-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+            .ban-overlay .ban-icon {
+                font-size: 40px;
+            }
+            .ban-overlay h2 {
+                font-size: 20px;
+            }
+            .ban-overlay .ban-timer {
+                font-size: 24px;
+            }
+            .memory-indicator {
+                font-size: 9px;
+                padding: 1px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ========== BAN OVERLAY ========== -->
+        <div class="ban-overlay" id="banOverlay">
+            <div class="ban-icon">🚫</div>
+            <h2>Akses Diblokir</h2>
+            <p>Anda telah melakukan inspect element terlalu sering. Akses akan dibuka kembali setelah:</p>
+            <div class="ban-timer" id="banTimer">30:00</div>
+            <div class="ban-count">Percobaan: <span id="banCount">10</span>/10</div>
+        </div>
+
+        <!-- ========== HEADER ========== -->
+        <header>
+            <div class="left">
+                <div class="logo-icon">R7</div>
+                <div>
+                    <div class="logo">RFF <span>707</span></div>
+                    <h1>AI Assistant <small>v2.0</small></h1>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span class="memory-indicator" id="memoryIndicator">
+                    <span class="mem-dot"></span>
+                    <span id="memoryCount">0</span> pesan
+                </span>
+                <span class="status-dot checking" id="statusDot"></span>
+                <span class="status-text" id="statusText">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- ========== CHAT AREA ========== -->
+        <div class="chat-area" id="chatArea">
+            <div class="message bot">
+                <div class="avatar">R7</div>
+                <div class="bubble">
+                    <strong>RFF 707</strong> — AI Assistant ready.<br />
+                    Ask me anything, I'll respond quickly.
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== INPUT AREA ========== -->
+        <div class="input-area">
+            <div class="input-row">
+                <textarea id="messageInput" rows="1" placeholder="Message RFF 707..."></textarea>
+                <button id="sendBtn">Send</button>
+            </div>
+            <div class="input-options">
+                <div class="model-selector-wrapper">
+                    <select id="modelSelect" class="model-selector">
+                        <option value="agnes-2.0-flash">⚡ Flash</option>
+                    </select>
+                </div>
+                <button id="clearBtn" class="clear-btn">✕ Clear Chat</button>
+                <button id="resetMemoryBtn" class="reset-memory-btn">🔄 Reset Memory</button>
+                <span style="flex:1;"></span>
+                <span style="font-size:10px;color:#444477;" id="charCount">0</span>
+                <span class="brand-tag"><span class="dot">●</span> RFF 707</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
         // ========== MEMORY / CONVERSATION HISTORY ==========
         // ============================================================
 
