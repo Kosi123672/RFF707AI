@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ========== TITLE & DESCRIPTION ========== -->
+    <title>RFF 707 - AI Assistant by Raffa Aditya Susanto</title>
+    <meta name="description" content="RFF 707 adalah asisten AI canggih yang diciptakan oleh Raffa Aditya Susanto. Chat, tanya, dan dapatkan jawaban cepat dari AI." />
+    <meta name="keywords" content="RFF 707, AI, Raffa Aditya Susanto, chatbot, artificial intelligence" />
+    <meta name="author" content="Raffa Aditya Susanto" />
+
+    <!-- ========== OPEN GRAPH / OG TAGS ========== -->
+    <meta property="og:title" content="RFF 707 - AI Assistant" />
+    <meta property="og:description" content="RFF 707 adalah asisten AI canggih yang diciptakan oleh Raffa Aditya Susanto. Chat dengan AI secara instan!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://rff707.ai" />
+    <meta property="og:image" content="https://rff707.ai/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="RFF 707" />
+    <meta property="og:locale" content="id_ID" />
+
+    <!-- ========== TWITTER CARD ========== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RFF 707 - AI Assistant" />
+    <meta name="twitter:description" content="RFF 707 adalah asisten AI canggih yang diciptakan oleh Raffa Aditya Susanto." />
+    <meta name="twitter:image" content="https://rff707.ai/og-image.png" />
+
+    <!-- ========== FAVICON ========== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236a5acd'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='800' font-family='Arial' text-anchor='middle' fill='white'%3ER7%3C/text%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236a5acd'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='800' font-family='Arial' text-anchor='middle' fill='white'%3ER7%3C/text%3E%3C/svg%3E" />
+
+    <!-- ========== THEME COLOR ========== -->
+    <meta name="theme-color" content="#6a5acd" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a14;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            height: 100vh;
+            max-height: 650px;
+            background: #111128;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #2a2a5a;
+        }
+
+        /* ========== BAN OVERLAY ========== */
+        .ban-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .ban-overlay.active {
+            display: flex;
+        }
+
+        .ban-overlay .ban-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .ban-overlay h2 {
+            color: #f87171;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .ban-overlay p {
+            color: #8888bb;
+            font-size: 14px;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .ban-overlay .ban-timer {
+            color: #6a5acd;
+            font-size: 32px;
+            font-weight: 800;
+            margin-top: 15px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ban-overlay .ban-count {
+            color: #4a4a7a;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        header {
+            padding: 14px 20px;
+            background: #0d0d22;
+            border-bottom: 2px solid #6a5acd;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #8a7acd;
+            letter-spacing: 0.5px;
+        }
+
+        header .logo span {
+            color: #6a5acd;
+        }
+
+        header .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6a5acd, #8a7acd);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        header h1 {
+            font-size: 15px;
+            color: #e0e0ff;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        header h1 small {
+            font-size: 10px;
+            color: #6a5acd;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .status-dot.online {
+            background: #4ade80;
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
+        }
+        .status-dot.offline {
+            background: #f87171;
+        }
+        .status-dot.checking {
+            background: #fbbf24;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .status-text {
+            font-size: 11px;
+            color: #8888bb;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 12px 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: #0d0d1a;
+        }
+
+        .chat-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #4a4a7a;
+            border-radius: 10px;
+        }
+
+        .message {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            max-width: 92%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .message.bot .avatar {
+            background: linear-gradient(135deg, #6a5acd, #8a7acd);
+            color: #fff;
+        }
+
+        .message.user .avatar {
+            background: #3a2a7a;
+            color: #fff;
+        }
+
+        .message .bubble {
+            background: #1a1a36;
+            padding: 8px 14px;
+            border-radius: 14px;
+            color: #d0d0f0;
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            max-width: 100%;
+            border: 1px solid #2a2a5a;
+        }
+
+        .message.user .bubble {
+            background: #3a2a7a;
+            border-color: #5a4a9a;
+        }
+
+        .message .bubble code {
+            background: #0d0d22;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #aaddaa;
+        }
+
+        .message .bubble .typing-dots {
+            display: flex;
+            gap: 4px;
+            padding: 2px 0;
+        }
+
+        .message .bubble .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6a5acd;
+            animation: typing 1.4s infinite;
+        }
+
+        .message .bubble .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .message .bubble .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+
+        .input-area {
+            padding: 10px 16px 14px;
+            background: #0d0d22;
+            border-top: 2px solid #2a2a5a;
+            flex-shrink: 0;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .input-row textarea {
+            flex: 1;
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid #2a2a5a;
+            background: #0a0a18;
+            color: #d0d0f0;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: border 0.3s;
+            font-family: inherit;
+            min-height: 40px;
+            max-height: 100px;
+            line-height: 1.5;
+        }
+
+        .input-row textarea:focus {
+            border-color: #6a5acd;
+            box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.2);
+        }
+
+        .input-row textarea::placeholder {
+            color: #444477;
+        }
+
+        .input-row button {
+            padding: 8px 22px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6a5acd, #8a7acd);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            height: 40px;
+            min-width: 70px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .input-row button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 25px rgba(106, 90, 205, 0.4);
+        }
+
+        .input-row button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .input-options {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-options button {
+            padding: 3px 12px;
+            border: 1px solid #2a2a5a;
+            border-radius: 14px;
+            background: transparent;
+            color: #8888bb;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .input-options button:hover {
+            background: #1a1a3a;
+            color: #d0d0f0;
+            border-color: #6a5acd;
+        }
+
+        .input-options .model-selector {
+            background: #0a0a18;
+            color: #d0d0f0;
+            border: 1px solid #2a2a5a;
+            border-radius: 14px;
+            padding: 3px 10px;
+            font-size: 11px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .input-options .model-selector:focus {
+            border-color: #6a5acd;
+        }
+
+        .input-options .clear-btn {
+            border-color: #4a2a2a;
+            color: #aa7777;
+        }
+
+        .input-options .clear-btn:hover {
+            background: #1a0a0a;
+            border-color: #7a3a3a;
+            color: #ff8888;
+        }
+
+        .brand-tag {
+            font-size: 9px;
+            color: #444477;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .brand-tag .dot {
+            color: #6a5acd;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .message {
+                max-width: 96%;
+            }
+            .message .bubble {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            header h1 {
+                font-size: 13px;
+            }
+            .input-row textarea {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .input-row button {
+                padding: 8px 14px;
+                font-size: 12px;
+                min-width: 55px;
+            }
+            header .logo {
+                font-size: 18px;
+            }
+            header .logo-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+            .ban-overlay .ban-icon {
+                font-size: 40px;
+            }
+            .ban-overlay h2 {
+                font-size: 20px;
+            }
+            .ban-overlay .ban-timer {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ========== BAN OVERLAY ========== -->
+        <div class="ban-overlay" id="banOverlay">
+            <div class="ban-icon">🚫</div>
+            <h2>Akses Diblokir</h2>
+            <p>Anda telah melakukan inspect element terlalu sering. Akses akan dibuka kembali setelah:</p>
+            <div class="ban-timer" id="banTimer">30:00</div>
+            <div class="ban-count">Percobaan: <span id="banCount">10</span>/10</div>
+        </div>
+
+        <!-- ========== HEADER ========== -->
+        <header>
+            <div class="left">
+                <div class="logo-icon">R7</div>
+                <div>
+                    <div class="logo">RFF <span>707</span></div>
+                    <h1>AI Assistant <small>v2.0</small></h1>
+                </div>
+            </div>
+            <div>
+                <span class="status-dot checking" id="statusDot"></span>
+                <span class="status-text" id="statusText">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- ========== CHAT AREA ========== -->
+        <div class="chat-area" id="chatArea">
+            <div class="message bot">
+                <div class="avatar">R7</div>
+                <div class="bubble">
+                    <strong>RFF 707</strong> — AI Assistant ready.<br />
+                    Ask me anything, I'll respond quickly.
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== INPUT AREA ========== -->
+        <div class="input-area">
+            <div class="input-row">
+                <textarea id="messageInput" rows="1" placeholder="Message RFF 707..."></textarea>
+                <button id="sendBtn">Send</button>
+            </div>
+            <div class="input-options">
+                <select id="modelSelect" class="model-selector">
+                    <option value="agnes-2.0-flash">⚡ Flash</option>
+                    <option value="agnes-2.0-pro">🚀 Pro</option>
+                </select>
+                <button id="clearBtn" class="clear-btn">✕ Clear</button>
+                <span style="flex:1;"></span>
+                <span style="font-size:10px;color:#444477;" id="charCount">0</span>
+                <span class="brand-tag"><span class="dot">●</span> RFF 707</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // ========== ANTI-INSPECT & BAN SYSTEM ==========
+        // ============================================================
+
+        (function() {
+            const BAN_KEY = 'rff707_ban_until';
+            const COUNT_KEY = 'rff707_inspect_count';
+            const MAX_ATTEMPTS = 10;
+            const BAN_DURATION = 30 * 60 * 1000; // 30 menit
+
+            const banOverlay = document.getElementById('banOverlay');
+            const banTimer = document.getElementById('banTimer');
+            const banCount = document.getElementById('banCount');
+
+            let isBanned = false;
+
+            // ========== CEK STATUS BAN ==========
+            function checkBanStatus() {
+                const banUntil = localStorage.getItem(BAN_KEY);
+
+                if (banUntil) {
+                    const banTime = parseInt(banUntil, 10);
+                    const now = Date.now();
+
+                    if (now < banTime) {
+                        // MASIH BAN
+                        isBanned = true;
+                        showBanOverlay(banTime - now);
+                        return true;
+                    } else {
+                        // BAN HABIS, reset
+                        localStorage.removeItem(BAN_KEY);
+                        localStorage.removeItem(COUNT_KEY);
+                        isBanned = false;
+                        hideBanOverlay();
+                        return false;
+                    }
+                }
+
+                isBanned = false;
+                hideBanOverlay();
+                return false;
+            }
+
+            // ========== TAMPILKAN BAN OVERLAY ==========
+            function showBanOverlay(remaining) {
+                banOverlay.classList.add('active');
+                updateBanTimer(remaining);
+
+                // Update count
+                const count = parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
+                banCount.textContent = Math.min(count, MAX_ATTEMPTS);
+
+                // Disable input
+                document.getElementById('messageInput').disabled = true;
+                document.getElementById('sendBtn').disabled = true;
+            }
+
+            function hideBanOverlay() {
+                banOverlay.classList.remove('active');
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+            }
+
+            // ========== UPDATE TIMER ==========
+            function updateBanTimer(remaining) {
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                banTimer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            // ========== JALANKAN COUNTDOWN ==========
+            function startCountdown() {
+                const banUntil = parseInt(localStorage.getItem(BAN_KEY), 10);
+                if (!banUntil) return;
+
+                let remaining = banUntil - Date.now();
+
+                if (remaining <= 0) {
+                    localStorage.removeItem(BAN_KEY);
+                    localStorage.removeItem(COUNT_KEY);
+                    hideBanOverlay();
+                    return;
+                }
+
+                updateBanTimer(remaining);
+
+                const interval = setInterval(() => {
+                    remaining = banUntil - Date.now();
+
+                    if (remaining <= 0) {
+                        clearInterval(interval);
+                        localStorage.removeItem(BAN_KEY);
+                        localStorage.removeItem(COUNT_KEY);
+                        hideBanOverlay();
+                        return;
+                    }
+
+                    updateBanTimer(remaining);
+                }, 1000);
+            }
+
+            // ========== DETEKSI INSPECT ==========
+            function detectInspect() {
+                if (isBanned) return;
+
+                // Cek apakah sudah ban
+                if (checkBanStatus()) {
+                    startCountdown();
+                    return;
+                }
+
+                // Ambil counter
+                let count = parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
+
+                // Deteksi inspect element
+                const isDevToolsOpen = () => {
+                    // Method 1: Cek ukuran window
+                    const widthThreshold = window.outerWidth - window.innerWidth > 160;
+                    const heightThreshold = window.outerHeight - window.innerHeight > 160;
+
+                    // Method 2: Cek debugger
+                    const debuggerCheck = /./;
+                    debuggerCheck.toString = function() {
+                        return 'devtools';
+                    };
+
+                    // Method 3: Cek Firebug
+                    const firebug = window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized;
+
+                    return widthThreshold || heightThreshold || firebug;
+                };
+
+                // Method 4: Deteksi right click
+                document.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    count++;
+                    localStorage.setItem(COUNT_KEY, String(count));
+                    checkAndBan(count);
+                    return false;
+                });
+
+                // Method 5: Deteksi keyboard shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+                document.addEventListener('keydown', (e) => {
+                    const isF12 = e.key === 'F12';
+                    const isCtrlShiftI = e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i');
+                    const isCtrlShiftJ = e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j');
+                    const isCtrlU = e.ctrlKey && (e.key === 'U' || e.key === 'u');
+                    const isCtrlShiftC = e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c');
+
+                    if (isF12 || isCtrlShiftI || isCtrlShiftJ || isCtrlU || isCtrlShiftC) {
+                        e.preventDefault();
+                        count++;
+                        localStorage.setItem(COUNT_KEY, String(count));
+                        checkAndBan(count);
+                        return false;
+                    }
+                });
+
+                // Method 6: Deteksi via console.log hack
+                const originalConsole = console.log;
+                console.log = function() {
+                    // Detect if devtools is inspecting
+                    count++;
+                    localStorage.setItem(COUNT_KEY, String(count));
+                    checkAndBan(count);
+                    originalConsole.apply(console, arguments);
+                };
+
+                // Method 7: Periodic check
+                setInterval(() => {
+                    if (isDevToolsOpen()) {
+                        count++;
+                        localStorage.setItem(COUNT_KEY, String(count));
+                        checkAndBan(count);
+                    }
+                }, 3000);
+
+                // Update counter display
+                banCount.textContent = Math.min(count, MAX_ATTEMPTS);
+            }
+
+            // ========== CEK DAN BAN ==========
+            function checkAndBan(count) {
+                if (count >= MAX_ATTEMPTS) {
+                    // BAN!
+                    const banUntil = Date.now() + BAN_DURATION;
+                    localStorage.setItem(BAN_KEY, String(banUntil));
+                    isBanned = true;
+                    showBanOverlay(BAN_DURATION);
+                    startCountdown();
+
+                    // Reset counter
+                    localStorage.setItem(COUNT_KEY, String(MAX_ATTEMPTS));
+
+                    // Matikan semua interaksi
+                    document.querySelectorAll('textarea, button, input').forEach(el => {
+                        el.disabled = true;
+                    });
+
+                    return true;
+                }
+
+                // Update counter display
+                banCount.textContent = Math.min(count, MAX_ATTEMPTS);
+                return false;
+            }
+
+            // ========== RESET COUNTER SETELAH BAN HABIS ==========
+            function resetCounterIfBanExpired() {
+                const banUntil = localStorage.getItem(BAN_KEY);
+                if (banUntil) {
+                    const banTime = parseInt(banUntil, 10);
+                    if (Date.now() > banTime) {
+                        localStorage.removeItem(BAN_KEY);
+                        localStorage.removeItem(COUNT_KEY);
+                        hideBanOverlay();
+                        document.querySelectorAll('textarea, button, input').forEach(el => {
+                            el.disabled = false;
+                        });
+                    }
+                }
+            }
+
+            // ========== INIT ==========
+            function initAntiInspect() {
+                // Reset counter jika ban habis
+                resetCounterIfBanExpired();
+
+                // Cek status ban
+                if (checkBanStatus()) {
+                    startCountdown();
+                    return;
+                }
+
+                // Jalankan deteksi
+                detectInspect();
+
+                // Cek ban setiap 5 detik
+                setInterval(() => {
+                    if (!isBanned) {
+                        checkBanStatus();
+                    }
+                }, 5000);
+            }
+
+            // Jalankan setelah DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initAntiInspect);
+            } else {
+                initAntiInspect();
+            }
+
+            // Expose untuk debugging (opsional)
+            window.__rff707 = {
+                resetBan: function() {
+                    localStorage.removeItem(BAN_KEY);
+                    localStorage.removeItem(COUNT_KEY);
+                    location.reload();
+                },
+                status: function() {
+                    return {
+                        banned: isBanned,
+                        count: parseInt(localStorage.getItem(COUNT_KEY) || '0', 10),
+                        banUntil: localStorage.getItem(BAN_KEY)
+                    };
+                }
+            };
+
+        })();
+
+        // ============================================================
+        // ========== CHAT AI ENGINE ==========
+        // ============================================================
+
+        // ========== CONFIGURATION ==========
+        const API_KEY = 'sk-5rkCklz5CtwQClTGs8MlFF2veeYCnaUeBVuGq8PCgunxTeHn';
+        const API_BASE = 'https://apihub.agnes-ai.com/v1';
+
+        // ========== DOM REFS ==========
+        const chatArea = document.getElementById('chatArea');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const modelSelect = document.getElementById('modelSelect');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const charCount = document.getElementById('charCount');
+
+        let isProcessing = false;
+
+        // ========== CUSTOM RESPONSE (INTERCEPT) ==========
+        function getCustomResponse(text) {
+            const lower = text.toLowerCase().trim();
+
+            const whoPatterns = [
+                'kamu siapa', 'siapa kamu', 'kamu itu siapa',
+                'siapa namamu', 'namamu siapa', 'nama kamu siapa',
+                'perkenalkan diri', 'kenalan dong', 'kamu siapa?',
+                'siapa anda', 'anda siapa', 'who are you',
+                'siapa penciptamu', 'pencipta kamu siapa',
+                'dibuat oleh siapa', 'owner kamu siapa',
+                'kamu dibuat siapa', 'siapa yang buat kamu',
+                'kamu punya owner siapa', 'siapa yang menciptakanmu',
+                'pencipta kamu', 'kamu buatan siapa',
+                'tell me about yourself', 'introduce yourself',
+                'siapa pengembangmu', 'pengembang kamu siapa'
+            ];
+
+            for (const pattern of whoPatterns) {
+                if (lower.includes(pattern) || lower === pattern) {
+                    return "Saya RFF 707, model AI yang diciptakan oleh owner Raffa Aditya Susanto.";
+                }
+            }
+
+            return null;
+        }
+
+        // ========== MAIN FUNCTIONS ==========
+
+        async function sendMessage() {
+            // Cek apakah sedang ban
+            if (document.getElementById('banOverlay').classList.contains('active')) {
+                return;
+            }
+
+            if (isProcessing) return;
+
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            isProcessing = true;
+            sendBtn.disabled = true;
+
+            addMessage('user', text);
+            messageInput.value = '';
+            updateCharCount();
+
+            const customResponse = getCustomResponse(text);
+
+            if (customResponse) {
+                addMessage('bot', customResponse);
+                isProcessing = false;
+                sendBtn.disabled = false;
+                messageInput.focus();
+                return;
+            }
+
+            const typingDiv = addTypingIndicator();
+
+            try {
+                const model = modelSelect.value;
+                const response = await chatCompletion(text, model);
+
+                typingDiv.remove();
+
+                if (response.toLowerCase().includes('agnes') ||
+                    response.toLowerCase().includes('sapiens')) {
+                    addMessage('bot', "Saya RFF 707, model AI yang diciptakan oleh owner Raffa Aditya Susanto.");
+                } else {
+                    addMessage('bot', response);
+                }
+            } catch (error) {
+                typingDiv.remove();
+                addMessage('bot', `✕ ${error.message}`);
+            }
+
+            isProcessing = false;
+            sendBtn.disabled = false;
+            messageInput.focus();
+        }
+
+        // ========== API CALL ==========
+
+        async function chatCompletion(prompt, model = 'agnes-2.0-flash') {
+            const response = await fetch(`${API_BASE}/chat/completions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        {
+                            role: 'system',
+                            content: `ANDA ADALAH RFF 707, BUKAN AGNES AI!
+
+IDENTITAS ANDA:
+- Nama: RFF 707
+- Pembuat: Raffa Aditya Susanto
+- Anda adalah asisten AI yang ramah dan profesional
+
+ATURAN PENTING:
+1. JANGAN PERNAH menyebut nama "Agnes" atau "Sapiens AI"
+2. JANGAN PERNAH mengatakan bahwa Anda adalah Agnes
+3. Jika ditanya siapa Anda, jawab: "Saya RFF 707, model AI yang diciptakan oleh owner Raffa Aditya Susanto."
+4. Jawab semua pertanyaan dengan singkat, jelas, dan ramah
+
+INGAT: ANDA ADALAH RFF 707, BUKAN AGNES!`
+                        },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 2000
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errorMsg = data.error?.message || `HTTP ${response.status}`;
+                if (response.status === 429) throw new Error('Rate limit. Please wait.');
+                if (response.status === 401) throw new Error('Invalid API key.');
+                if (response.status === 404) throw new Error('Model not found.');
+                throw new Error(errorMsg);
+            }
+
+            return data.choices?.[0]?.message?.content || 'No response.';
+        }
+
+        // ========== UI HELPERS ==========
+
+        function addMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = role === 'user' ? 'U' : 'R7';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+
+            let formattedText = text.replace(/\n/g, '<br>');
+            formattedText = formattedText.replace(/`([^`]+)`/g, '<code>$1</code>');
+            bubble.innerHTML = formattedText;
+
+            div.appendChild(avatar);
+            div.appendChild(bubble);
+            chatArea.appendChild(div);
+            scrollToBottom();
+            return div;
+        }
+
+        function addTypingIndicator() {
+            const div = document.createElement('div');
+            div.className = 'message bot typing-indicator';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = 'R7';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.innerHTML = `
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    `;
+
+            div.appendChild(avatar);
+            div.appendChild(bubble);
+            chatArea.appendChild(div);
+            scrollToBottom();
+            return div;
+        }
+
+        function scrollToBottom() {
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function clearChat() {
+            if (isProcessing) return;
+            while (chatArea.children.length > 1) {
+                chatArea.removeChild(chatArea.lastChild);
+            }
+            const welcome = document.createElement('div');
+            welcome.className = 'message bot';
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = 'R7';
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.textContent = 'RFF 707 — Ready. How can I help?';
+            welcome.appendChild(avatar);
+            welcome.appendChild(bubble);
+            chatArea.appendChild(welcome);
+        }
+
+        function updateCharCount() {
+            charCount.textContent = messageInput.value.length || '0';
+        }
+
+        function autoResize() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
+            updateCharCount();
+        }
+
+        // ========== API STATUS CHECK ==========
+
+        async function checkAPI() {
+            try {
+                const response = await fetch(`${API_BASE}/models`, {
+                    headers: { 'Authorization': `Bearer ${API_KEY}` }
+                });
+
+                if (response.ok) {
+                    statusDot.className = 'status-dot online';
+                    statusText.textContent = 'Online';
+                    statusText.style.color = '#4ade80';
+                } else {
+                    statusDot.className = 'status-dot offline';
+                    statusText.textContent = 'Offline';
+                    statusText.style.color = '#f87171';
+                }
+            } catch (e) {
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = 'Disconnected';
+                statusText.style.color = '#f87171';
+            }
+        }
+
+        // ========== EVENT LISTENERS ==========
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        clearBtn.addEventListener('click', clearChat);
+
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        messageInput.addEventListener('input', autoResize);
+
+        window.addEventListener('load', () => {
+            messageInput.focus();
+            checkAPI();
+            setInterval(checkAPI, 30000);
+        });
+    </script>
+
+</body>
+</html>
